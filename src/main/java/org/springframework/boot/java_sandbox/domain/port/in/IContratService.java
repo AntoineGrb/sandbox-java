@@ -2,6 +2,7 @@ package org.springframework.boot.java_sandbox.domain.port.in;
 
 import org.springframework.boot.java_sandbox.application.dto.in.ContratDTORequest;
 import org.springframework.boot.java_sandbox.application.dto.in.MouvementDTORequest;
+import org.springframework.boot.java_sandbox.application.dto.out.ContratDTO;
 import org.springframework.boot.java_sandbox.domain.model.Contrat;
 import org.springframework.boot.java_sandbox.domain.model.Mouvement;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 
 public interface IContratService {
-    Contrat getContratById(Long id);
+    ContratDTO getContratById(Long id);
 
     List<Contrat> getAllContratsByIdAssure(Long idAssure);
 

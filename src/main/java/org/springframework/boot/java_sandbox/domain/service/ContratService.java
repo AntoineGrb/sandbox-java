@@ -3,6 +3,7 @@ package org.springframework.boot.java_sandbox.domain.service;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.java_sandbox.application.dto.in.ContratDTORequest;
 import org.springframework.boot.java_sandbox.application.dto.in.MouvementDTORequest;
+import org.springframework.boot.java_sandbox.application.dto.out.ContratDTO;
 import org.springframework.boot.java_sandbox.application.mapper.ContratDTOMapper;
 import org.springframework.boot.java_sandbox.application.mapper.MouvementDTOMapper;
 import org.springframework.boot.java_sandbox.domain.exception.ContratNotFoundException;
@@ -13,7 +14,8 @@ import org.springframework.boot.java_sandbox.domain.port.out.IContratRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
+import static org.springframework.boot.java_sandbox.domain.utils.ContratUtils.calculerMontantTotal;
 
 /*
     Le service est la classe qui va gérer la logique métier.
@@ -30,9 +32,33 @@ public class ContratService implements IContratService {
     private final ContratDTOMapper contratDTOMapper;
 
     //* Rechercher un contrat par son id
-    public Contrat getContratById(Long numContrat) { //On implémente la méthode de l'interface (port in)
-        Optional<Contrat> contrat = contratRepository.findById(numContrat); //On utilise la méthode du repository (port out) pour obtenir le contrat (modèle)
-        return contrat.orElseThrow(() -> new ContratNotFoundException(numContrat)); //On retourne le contrat (modèle) ou null
+    public ContratDTO getContratById(Long numContrat) { //On implémente la méthode de l'interface (port in)
+        // Optional<Contrat> contrat = contratRepository.findById(numContrat); //On utilise la méthode du repository (port out) pour obtenir le contrat (modèle)
+        // return contrat.orElseThrow(() -> new ContratNotFoundException(numContrat)); //On retourne le contrat (modèle) ou null
+
+        //On utilise la méthode du repository (port out) pour obtenir le contrat (modèle)
+        Contrat contrat = contratRepository.findById(numContrat)
+                .orElseThrow(() -> new ContratNotFoundException(numContrat));
+
+        //On calcule le typeContrat en fonction du code produit
+        Long codeProduit = contrat.getCodeProduit();
+        String typeContrat = switch (codeProduit.toString()) {
+            case "101" -> "UC";
+            case "102", "103" -> "Retraite";
+            case "104" -> "PERP";
+            default -> null;
+        };
+
+        //On calcule le montant total (somme de tous les mouvements)
+        Double montantTotal = calculerMontantTotal(contrat);
+
+        // On convertit le contrat en contratDTO et on ajoute les nouvelles données
+        ContratDTO contratDTO = contratDTOMapper.fromContratToContratDTO(contrat);
+        contratDTO.setTypeContrat(typeContrat);
+        contratDTO.setMontantTotal(montantTotal);
+
+        // On retourne le contratDTO
+        return contratDTO;
     }
 
     //* Rechercher tous les contrats d'un assuré par l'idAssure

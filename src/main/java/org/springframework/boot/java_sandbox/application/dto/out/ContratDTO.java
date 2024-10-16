@@ -22,7 +22,9 @@ public class ContratDTO {
     private String ville;
     private String pays;
     private Long codeProduit;
+    private String typeContrat;
     private Long idAssure;
     private EpargneDTO epargne; //On prend l'objet epargne pour le mettre dans l'objet contrat
     private List<MouvementDTO> mouvements; //On prend une liste d'objets mouvement pour le mettre dans l'objet contra
+    private Double montantTotal;
 }

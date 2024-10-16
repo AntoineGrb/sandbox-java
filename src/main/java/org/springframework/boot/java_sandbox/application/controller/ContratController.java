@@ -36,15 +36,9 @@ public class ContratController {
 
     //*Rechercher un contrat par son id
     @GetMapping("/contrat/{id}") //On précise le type GET et le paramètre attendu
-    public ContratDTO getContratById(@PathVariable Long id) { //Ici on veut obtenir un contrat via son id
-        Contrat contrat = contratService.getContratById(id); //On utilise la méthode du service pour obtenir le contrat (modèle)
-
-        // Vérification du type de contrat pour choisir le mapper
-        if (contrat instanceof ContratPerp) {
-            return contratDTOMapper.fromContratPerpToContratDTO((ContratPerp) contrat); // Conversion spécifique à ContratPerp
-        } else {
-            return contratDTOMapper.fromContratToContratDTO(contrat); // Conversion spécifique à Contrat normal
-        }
+    public ResponseEntity<ContratDTO> getContratById(@PathVariable Long id) { //Ici on veut obtenir un contrat via son id
+        ContratDTO contratDTO = contratService.getContratById(id); //On utilise la méthode du service pour obtenir le contrat (modèle)
+        return ResponseEntity.ok(contratDTO);
     }
 
     //*Rechercher tous les contrats d'un assuré par l'idAssure
