@@ -1,0 +1,153 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="1" author="antoine">
+        <!-- Peuplement de la table epargne -->
+        <insert tableName="epargne">
+            <column name="num_contrat" value="1"/>
+            <column name="nb_part" value="100"/>
+            <column name="epargne_acquise" value="15000.00"/>
+        </insert>
+        <insert tableName="epargne">
+            <column name="num_contrat" value="2"/>
+            <column name="nb_part" value="50"/>
+            <column name="epargne_acquise" value="8000.00"/>
+        </insert>
+        <insert tableName="epargne">
+            <column name="num_contrat" value="3"/>
+            <column name="nb_part" value="200"/>
+            <column name="epargne_acquise" value="25000.00"/>
+        </insert>
+
+    </changeSet>
+
+    <!-- Changelogs pour créer les tables PERP -->
+    <changeSet id="2" author="antoine">
+        <createTable tableName="contratPERP">
+            <column name="num_contrat" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code_produit" type="BIGINT"/>
+            <column name="id_assure" type="BIGINT"/>
+            <column name="statut" type="VARCHAR(50)"/>
+            <column name="nom" type="VARCHAR(100)"/>
+            <column name="prenom" type="VARCHAR(100)"/>
+            <column name="code_postal" type="VARCHAR(20)"/>
+            <column name="ville" type="VARCHAR(100)"/>
+            <column name="pays" type="VARCHAR(100)"/>
+            <column name="date_sign" type="DATE"/>
+            <column name="date_val" type="DATE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="antoine">
+        <createTable tableName="epargnePERP">
+            <column name="num_contrat" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nb_part" type="INTEGER"/>
+            <column name="epargne_acquise" type="DECIMAL(15,2)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="antoine">
+        <createTable tableName="mouvementPERP">
+            <column name="num_mouv" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="num_contrat" type="BIGINT"/>
+            <column name="nom_produit" type="VARCHAR(100)"/>
+            <column name="montant" type="DECIMAL(15,2)"/>
+            <column name="date" type="DATE"/>
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="statut" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Changelogs pour ajouter les clés étrangères -->
+    <changeSet id="5" author="antoine">
+        <addForeignKeyConstraint baseTableName="epargnePERP"
+                                 baseColumnNames="num_contrat"
+                                 referencedTableName="contratPERP"
+                                 referencedColumnNames="num_contrat"
+                                 constraintName="fk_epargnePERP_num_contrat"/>
+    </changeSet>
+
+    <changeSet id="6" author="antoine">
+        <addForeignKeyConstraint baseTableName="mouvementPERP"
+                                 baseColumnNames="num_contrat"
+                                 referencedTableName="contratPERP"
+                                 referencedColumnNames="num_contrat"
+                                 constraintName="fk_mouvementPERP_num_contrat"/>
+    </changeSet>
+
+    <!-- Insertion des données dans les tables -->
+    <changeSet id="7" author="antoine">
+        <!-- Insertion de contrats PERP -->
+        <insert tableName="contratPERP">
+            <column name="num_contrat" value="11"/>
+            <column name="code_produit" value="200"/>
+            <column name="id_assure" value="1001"/>
+            <column name="statut" value="ACTIF"/>
+            <column name="nom" value="Polo"/>
+            <column name="prenom" value="Carlo"/>
+            <column name="code_postal" value="69000"/>
+            <column name="ville" value="Lyon"/>
+            <column name="pays" value="France"/>
+            <column name="date_sign" value="2012-03-01"/>
+            <column name="date_val" value="2015-01-15"/>
+        </insert>
+        <insert tableName="contratPERP">
+            <column name="num_contrat" value="12"/>
+            <column name="code_produit" value="102"/>
+            <column name="id_assure" value="1008"/>
+            <column name="statut" value="EN_ATTENTE"/>
+            <column name="nom" value="Ciro"/>
+            <column name="prenom" value="Franco"/>
+            <column name="code_postal" value="61000"/>
+            <column name="ville" value="Saint Etienne"/>
+            <column name="pays" value="France"/>
+            <column name="date_sign" value="2021-02-01"/>
+            <column name="date_val" value="2020-02-10"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insertion des données dans la table epargnePERP -->
+    <changeSet id="8" author="antoine">
+        <insert tableName="epargnePERP">
+            <column name="num_contrat" value="11"/>
+            <column name="nb_part" value="780"/>
+            <column name="epargne_acquise" value="19500.00"/>
+        </insert>
+        <insert tableName="epargnePERP">
+            <column name="num_contrat" value="12"/>
+            <column name="nb_part" value="400"/>
+            <column name="epargne_acquise" value="15000.00"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insertion des données dans la table mouvementPERP -->
+    <changeSet id="9" author="antoine">
+        <insert tableName="mouvementPERP">
+            <column name="num_mouv" value="1"/>
+            <column name="num_contrat" value="11"/>
+            <column name="nom_produit" value="Produit Retraite"/>
+            <column name="montant" value="1000.00"/>
+            <column name="date" value="2012-03-01"/>
+            <column name="type" value="VERSEMENT"/>
+            <column name="statut" value="EN_ATTENTE"/>
+        </insert>
+        <insert tableName="mouvementPERP">
+            <column name="num_mouv" value="2"/>
+            <column name="num_contrat" value="12"/>
+            <column name="nom_produit" value="Produit Assurance Vie"/>
+            <column name="montant" value="500.00"/>
+            <column name="date" value="2021-02-01"/>
+            <column name="type" value="VERSEMENT"/>
+            <column name="statut" value="EN_ATTENTE"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

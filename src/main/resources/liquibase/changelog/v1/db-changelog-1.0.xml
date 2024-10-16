@@ -1,0 +1,200 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <!-- Changelogs pour créer les tables -->
+    <changeSet id="1" author="antoine">
+        <createTable tableName="contrat">
+            <column name="num_contrat" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code_produit" type="BIGINT"/>
+            <column name="id_assure" type="BIGINT"/>
+            <column name="statut" type="VARCHAR(50)"/>
+            <column name="nom" type="VARCHAR(100)"/>
+            <column name="prenom" type="VARCHAR(100)"/>
+            <column name="code_postal" type="VARCHAR(20)"/>
+            <column name="ville" type="VARCHAR(100)"/>
+            <column name="pays" type="VARCHAR(100)"/>
+            <column name="date_sign" type="DATE"/>
+            <column name="date_val" type="DATE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="antoine">
+        <createTable tableName="epargne">
+            <column name="num_contrat" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nb_part" type="INTEGER"/>
+            <column name="epargne_acquise" type="DECIMAL(15,2)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="antoine">
+        <createTable tableName="produit">
+            <column name="code_produit" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nom_produit" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="antoine">
+        <createTable tableName="mouvement">
+            <column name="num_mouv" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="num_contrat" type="BIGINT"/>
+            <column name="nom_produit" type="VARCHAR(100)"/>
+            <column name="montant" type="DECIMAL(15,2)"/>
+            <column name="date" type="DATE"/>
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="statut" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Changelogs pour ajouter les clés étrangères -->
+    <changeSet id="5" author="antoine">
+        <addForeignKeyConstraint baseTableName="contrat"
+                                 baseColumnNames="code_produit"
+                                 referencedTableName="produit"
+                                 referencedColumnNames="code_produit" constraintName="fk_contrat_code_produit"/>
+    </changeSet>
+
+    <changeSet id="6" author="antoine">
+        <addForeignKeyConstraint baseTableName="epargne"
+                                 baseColumnNames="num_contrat"
+                                 referencedTableName="contrat"
+                                 referencedColumnNames="num_contrat" constraintName="fk_epargne_num_contrat"/>
+    </changeSet>
+
+    <changeSet id="7" author="antoine">
+        <addForeignKeyConstraint baseTableName="mouvement"
+                                 baseColumnNames="num_contrat"
+                                 referencedTableName="contrat"
+                                 referencedColumnNames="num_contrat" constraintName="fk_mouvement_num_contrat"/>
+    </changeSet>
+
+    <!-- Insertion de données factices dans les tables -->
+
+    <changeSet id="8" author="antoine">
+        <!-- Insertion de produits -->
+        <insert tableName="produit">
+            <column name="code_produit" value="101"/>
+            <column name="nom_produit" value="Produit Retraite"/>
+        </insert>
+        <insert tableName="produit">
+            <column name="code_produit" value="102"/>
+            <column name="nom_produit" value="Produit Assurance Vie"/>
+        </insert>
+        <insert tableName="produit">
+            <column name="code_produit" value="103"/>
+            <column name="nom_produit" value="Produit Santé"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="9" author="antoine">
+        <!-- Insertion de contrats -->
+        <insert tableName="contrat">
+            <column name="num_contrat" value="1"/>
+            <column name="code_produit" value="101"/>
+            <column name="id_assure" value="1001"/>
+            <column name="statut" value="ACTIF"/>
+            <column name="nom" value="Dupont"/>
+            <column name="prenom" value="Jean"/>
+            <column name="code_postal" value="75000"/>
+            <column name="ville" value="Paris"/>
+            <column name="pays" value="France"/>
+            <column name="date_sign" value="2023-01-01"/>
+            <column name="date_val" value="2023-01-15"/>
+        </insert>
+        <insert tableName="contrat">
+            <column name="num_contrat" value="2"/>
+            <column name="code_produit" value="102"/>
+            <column name="id_assure" value="1002"/>
+            <column name="statut" value="EN_ATTENTE"/>
+            <column name="nom" value="Martin"/>
+            <column name="prenom" value="Claire"/>
+            <column name="code_postal" value="69000"/>
+            <column name="ville" value="Lyon"/>
+            <column name="pays" value="France"/>
+            <column name="date_sign" value="2023-02-01"/>
+            <column name="date_val" value="2023-02-10"/>
+        </insert>
+        <insert tableName="contrat">
+            <column name="num_contrat" value="3"/>
+            <column name="code_produit" value="103"/>
+            <column name="id_assure" value="1003"/>
+            <column name="statut" value="SUSPENDU"/>
+            <column name="nom" value="Durand"/>
+            <column name="prenom" value="Pierre"/>
+            <column name="code_postal" value="13000"/>
+            <column name="ville" value="Marseille"/>
+            <column name="pays" value="France"/>
+            <column name="date_sign" value="2023-03-01"/>
+            <column name="date_val" value="2023-03-15"/>
+        </insert>
+    </changeSet>
+
+
+    <changeSet id="10" author="antoine">
+        <!-- Insérer des mouvements pour les contrats -->
+        <insert tableName="mouvement">
+            <column name="num_mouv" value="1"/>
+            <column name="num_contrat" value="1"/>
+            <column name="nom_produit" value="Produit Retraite"/>
+            <column name="montant" value="1000.00"/>
+            <column name="date" value="2023-01-10"/>
+            <column name="type" value="VERSEMENT"/>
+            <column name="statut" value="VALIDÉ"/>
+        </insert>
+        <insert tableName="mouvement">
+            <column name="num_mouv" value="2"/>
+            <column name="num_contrat" value="1"/>
+            <column name="nom_produit" value="Produit Retraite"/>
+            <column name="montant" value="500.00"/>
+            <column name="date" value="2023-01-20"/>
+            <column name="type" value="RETRAIT"/>
+            <column name="statut" value="EN_ATTENTE"/>
+        </insert>
+        <insert tableName="mouvement">
+            <column name="num_mouv" value="3"/>
+            <column name="num_contrat" value="2"/>
+            <column name="nom_produit" value="Produit Assurance Vie"/>
+            <column name="montant" value="2000.00"/>
+            <column name="date" value="2023-02-15"/>
+            <column name="type" value="VERSEMENT"/>
+            <column name="statut" value="VALIDÉ"/>
+        </insert>
+        <insert tableName="mouvement">
+            <column name="num_mouv" value="4"/>
+            <column name="num_contrat" value="2"/>
+            <column name="nom_produit" value="Produit Assurance Vie"/>
+            <column name="montant" value="800.00"/>
+            <column name="date" value="2023-02-25"/>
+            <column name="type" value="RETRAIT"/>
+            <column name="statut" value="EN_ATTENTE"/>
+        </insert>
+        <insert tableName="mouvement">
+            <column name="num_mouv" value="5"/>
+            <column name="num_contrat" value="3"/>
+            <column name="nom_produit" value="Produit Santé"/>
+            <column name="montant" value="1500.00"/>
+            <column name="date" value="2023-03-10"/>
+            <column name="type" value="VERSEMENT"/>
+            <column name="statut" value="VALIDÉ"/>
+        </insert>
+        <insert tableName="mouvement">
+            <column name="num_mouv" value="6"/>
+            <column name="num_contrat" value="3"/>
+            <column name="nom_produit" value="Produit Santé"/>
+            <column name="montant" value="300.00"/>
+            <column name="date" value="2023-03-20"/>
+            <column name="type" value="RETRAIT"/>
+            <column name="statut" value="VALIDÉ"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

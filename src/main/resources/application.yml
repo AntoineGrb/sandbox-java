@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: sandbox
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/changelog/db-changelog-master.xml
